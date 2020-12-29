@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "_dist",
+    "noImplicitAny": true,
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "experimentalDecorators": true
+  },
+  "exclude": ["_src/test"]
+}
