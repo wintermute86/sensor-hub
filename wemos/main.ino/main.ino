@@ -11,10 +11,10 @@ extern "C"
 #define sleepTime 60 //determines how often esp falls into deep sleep
 
 DHT dht(DHTPIN, DHTTYPE);
-IPAddress serverIP(); //db server ip
+IPAddress serverIP(); //db server ip e.g. (192, 168, 0, 1)
 WiFiClient client;
 
-const char *ssid = ""; //network ssid
+const char *ssid = "";     //network ssid
 const char *password = ""; //network password
 const unsigned int deviceID = ESP.getChipId();
 
@@ -36,7 +36,8 @@ void setup()
   Serial.print("\nIP address: ");
   Serial.print(WiFi.localIP());
 
-  if (debug) {
+  if (debug)
+  {
     Serial.print("\ntimestamp: ");
     Serial.println(millis());
     Serial.print("\nmemory: ");
@@ -94,37 +95,38 @@ float getHumidity()
 void uploadData(float temperature, float humidity)
 {
 
-  if (client.connect(serverIP, 8000))
+  if (client.connect(serverIP, 3000))
   {
     Serial.print("\n********");
     Serial.print("\nUploading data...");
 
     // Construct API request body
-    String body = "temperature=" + String(temperature) + "&humidity=" + String(humidity) + "&device=" + String(deviceID);
+    String body = "{\"temperature\":" + String(temperature) + ", \"humidity\": " + String(humidity) + ", \"device\": " + String(deviceID) + "}";
 
-    client.print("POST /temp HTTP/1.1\n");
+    client.print("POST /api/temperature HTTP/1.1\n");
     client.print("Host: ");
     client.print(serverIP);
-    client.print(":8000\n");
-    client.print("Content-Type: application/x-www-form-urlencoded\n");
+    client.print(":3000\n");
+    client.print("Content-Type: application/json\n");
     client.print("Content-Length: ");
     client.print(body.length());
     client.print("\n\n");
     client.print(body);
     client.print("\n\n");
 
-    client.print("POST /humid HTTP/1.1\n");
+    client.print("POST /api/humidity HTTP/1.1\n");
     client.print("Host: ");
     client.print(serverIP);
-    client.print(":8000\n");
-    client.print("Content-Type: application/x-www-form-urlencoded\n");
+    client.print(":3000\n");
+    client.print("Content-Type: application/json\n");
     client.print("Content-Length: ");
     client.print(body.length());
     client.print("\n\n");
     client.print(body);
     client.print("\n\n");
 
-    if (debug) {
+    if (debug)
+    {
       Serial.print("\n********");
       Serial.print("\nServer response:");
       while (client.connected() || client.available())
@@ -136,7 +138,6 @@ void uploadData(float temperature, float humidity)
         }
       }
     }
-
   }
   client.stop();
 }
