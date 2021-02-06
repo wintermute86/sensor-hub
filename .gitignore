@@ -106,3 +106,4 @@ dist
 _dist
 build
 react-app-env.d.ts
+app/src/config.json
