@@ -1,22 +1,7 @@
 import { CardProps } from "../props";
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from "recharts";
 
 export function Card({ label: cardLabel, data = [] }: CardProps) {
-  const minTemp = Math.min(...data.map((d) => parseInt(d.temperature)));
-  const minHumid = Math.min(...data.map((d) => parseInt(d.humidity)));
-  const maxTemp = Math.max(...data.map((d) => parseInt(d.temperature)));
-  const maxHumid = Math.max(...data.map((d) => parseInt(d.humidity)));
-  const domainLowEnd = Math.min(minTemp, minHumid);
-  const domainHighEnd = Math.max(maxTemp, maxHumid);
-
   const domainTolerance = 5;
 
   const formatTimeStamp = (timestamp: string) =>
@@ -47,14 +32,15 @@ export function Card({ label: cardLabel, data = [] }: CardProps) {
                 dataKey="temperature"
                 stroke="#d64161"
                 strokeWidth="1"
+                dot={false}
               />
               <Line
                 type="monotone"
                 dataKey="humidity"
                 stroke="#6b5b95"
                 strokeWidth="1"
+                dot={false}
               />
-              <CartesianGrid />
               <XAxis
                 dataKey="date"
                 axisLine={{ stroke: "#3e4444" }}
@@ -63,8 +49,8 @@ export function Card({ label: cardLabel, data = [] }: CardProps) {
               <YAxis
                 axisLine={{ stroke: "#3e4444" }}
                 domain={[
-                  domainLowEnd - domainTolerance,
-                  domainHighEnd + domainTolerance,
+                  `dataMin - ${domainTolerance}`,
+                  `dataMax + ${domainTolerance}`,
                 ]}
               />
               <Tooltip labelFormatter={formatTimeStamp} />
